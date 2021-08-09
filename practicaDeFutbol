@@ -1,0 +1,115 @@
+class Equipo {
+	const property jugadores = []
+	const property jugadoresQueJuegan = []
+	var presupuesto
+	    method contratarJugador(jugador) {
+		jugadores.add(jugador)}
+	    method despedirJugador(jugador){
+			jugadores.remove(jugador)
+			jugadoresQueJuegan.remove(jugador)
+		}
+		method mejorarContrato(jugador,cantidad) {
+			jugador.mejoraSuContrato(cantidad)
+		}
+		method bajarContrato(jugador,cantidad){
+			jugador.bajaSuContrato(cantidad)
+		}
+		method jugarPartido() {
+			jugadoresQueJuegan.forEach({jugador => jugador.jugarPartido()})
+			self.aumentaElPresupuesto()
+		}
+		method aumentaElPresupuesto() {
+			presupuesto = presupuesto + 50
+		}
+		method agregarJugadorQueJuegue(jugador) {
+			jugadoresQueJuegan.add(jugador)
+		}
+		method echarJugadorQueJuegue(jugador) {
+			jugadoresQueJuegan.remove(jugador)
+		}
+		method elJugadorPerteneceAlClub(jugador) {
+		return jugadores.contains(jugador)
+	}
+	method goleadorDelClubEnLiga() {
+	return jugadores.max({jugador => jugador.golesEnLiga()})	
+	}
+	}
+class EquipoGrande inherits Equipo {
+	override method aumentaElPresupuesto() {
+			presupuesto = presupuesto + 100
+		}
+}
+class Jugador {
+	var property edad
+	var equipo
+	var felicidad
+	var property golesEnLiga
+	var sueldo
+	method mejoraSuContrato(cantidad) {
+		sueldo = sueldo + cantidad
+	}
+	method bajaSuContrato(cantidad) {
+		sueldo = sueldo - cantidad
+		sueldo.max(0)
+	}
+	method jugarPartido() {
+		self.aumentarFelicidad()
+	}
+	method aumentarFelicidad(){
+		felicidad = felicidad + 10
+	}
+	method lesionarse() {
+		felicidad = felicidad - 50
+	}
+	method estaFeliz() {
+		return felicidad >= 100
+	}
+	method hacerUnGolEnLiga() {
+		golesEnLiga = golesEnLiga +1
+	}
+	method cambiarEquipo(equipoNuevo) {
+		equipo.despedirJugador(self)
+		equipo = equipoNuevo
+		equipo.contratarJugador(self)
+	}
+}
+class Liga {
+	var equipos = []
+	var posiciones = []
+	var goleador
+	var asistidor
+	var cantidadDeFechas
+	var fechaActual
+	var jugadores = []
+	method cantidadDeFechas() {
+		cantidadDeFechas = ((equipos.size())-1)*2
+		return cantidadDeFechas
+	}
+	method jugarFecha() {
+		equipos.forEach({equipo => equipo.jugarPartido()})
+		fechaActual = fechaActual +1
+	}
+	method elEquipoPerteneceALaLiga(equipo) {
+		return equipos.contains(equipo)
+	}
+	method elJugadorPerteneceALaLiga(jugador) {
+		return equipos.any({equipo => equipo.elJugadorPerteneceAlClub(jugador)})
+	}
+	method goleador() {
+		return jugadores.max({jugador => jugador.golesEnLiga()})
+	}
+	method agregarEquipo(equipo) {
+		equipos.add(equipo)
+	}
+	method eliminarEquipo(equipo) {
+		equipos.remove(equipo)
+	}
+	method jugadores() {
+		return equipos.map({equipo => equipo.jugadores()})
+	}
+}
+const messi = new Jugador(edad = 34, equipo = barcelona, felicidad = 100, golesEnLiga = 0, sueldo = 100)
+const ligaEspaniola = new Liga(equipos=[], posiciones=[], goleador = messi, asistidor = messi, cantidadDeFechas = 38, fechaActual = 0)
+const barcelona = new EquipoGrande(jugadores=[], jugadoresQueJuegan = [], presupuesto = 100)
+const psg = new EquipoGrande(jugadores=[], jugadoresQueJuegan = [], presupuesto = 100)
+const realMadrid = new EquipoGrande(jugadores=[], jugadoresQueJuegan = [], presupuesto = 100)
